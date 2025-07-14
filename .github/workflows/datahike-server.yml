@@ -114,5 +114,5 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64/v8
           tags: |
-            ghcr.io/${{ github.repository }}:${{ github.ref_name }}-latest
-            ghcr.io/${{ github.repository }}:${{ github.ref_name }}-${{ github.sha }}
+            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository }}:${{ github.ref_name }}-${{ github.run_number }}
