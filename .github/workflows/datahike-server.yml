@@ -88,9 +88,10 @@ jobs:
       # ── build ─────────────────────────────────────────────────────────────
       - name: Build Datahike HTTP-server uber-jar
         working-directory: datahike
-        run: bb http-server-uber 
+        run: bb http-server-uber
 
       - name: Prepare Docker build context
+        # Copy the built JAR and rename it to datahike-http-server.jar for the Docker image
         run: |
           mkdir -p build
           cp datahike/target-http-server/*.jar build/datahike-http-server.jar
@@ -110,7 +111,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: .github/docker/Dockerfile
+          file: ./Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64/v8
           tags: |

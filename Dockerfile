@@ -8,10 +8,10 @@ RUN apt-get update -qq && \
 
 WORKDIR /opt/datahike
 COPY build/datahike-http-server.jar .
-COPY start.edn /usr/local/bin/start.edn
+COPY start.bb /usr/local/bin/start.bb
 
-RUN chmod +x /usr/local/bin/start.edn && \
+RUN chmod +x /usr/local/bin/start.bb && \
     mkdir -p /opt/datahike/jars
 
-ENTRYPOINT ["bb", "/usr/local/bin/start.edn"]
+ENTRYPOINT ["bb", "/usr/local/bin/start.bb"]
 EXPOSE 4444

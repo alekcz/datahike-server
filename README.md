@@ -5,7 +5,7 @@ A lightweight, container-ready wrapper around [Datahike](https://github.com/repl
 The project provides:
 
 - 📦 **Pre-built Docker images** published to GHCR.
-- ⚡️ A tiny [`start.edn`](start.edn) Babashka script that bootstraps the server anywhere Java `17+` is available.
+- ⚡️ A tiny [`start.bb`](start.bb) Babashka script that bootstraps the server anywhere Java `17+` is available.
 - 🛠️ GitHub Workflow to automatically build and publish new versions.
 
 > If you want to embed Datahike directly inside your own Clojure/JVM project you probably want the core [Datahike](https://github.com/replikativ/datahike) library.  This repository is only about running it as a **service**.
@@ -40,15 +40,23 @@ You can now send requests to `http://localhost:4444`.
 $ git clone https://github.com/alekcz/datahike-server.git
 $ cd datahike-server
 
+# Clone and build the Datahike HTTP server JAR
+$ git clone --depth 1 https://github.com/alekcz/datahike.git
+$ cd datahike && bb http-server-uber && cd ..
+
+# Copy the JAR to the expected location
+$ mkdir -p /opt/datahike
+$ cp datahike/target-http-server/datahike-http-server.jar /opt/datahike/
+
 # Start the server (defaults to port 4444)
-$ bb start.edn
+$ bb start.bb
 ```
 
 The script will:
 
 1. Generate a default configuration file (or read the one you provide via `DATAHIKE_CONFIG_EDN`).
 2. Download any **extra dependencies** you specify.
-3. Launch `datahike.http.server` with the computed classpath.
+3. Launch `datahike.http.server` with the computed classpath using the pre-built JAR.
 
 ---
 
@@ -93,18 +101,21 @@ Or deps.edn style dependencies if you prefer.
 ## 🛠️ Building the image yourself
 
 ```bash
-# Clone along with the main Datahike repo (needed for the uber-jar)
+# Clone the datahike-server repository
 $ git clone https://github.com/alekcz/datahike-server.git && cd datahike-server
+
+# Clone the Datahike repository (contains modifications for runtime backend loading)
 $ git clone --depth 1 https://github.com/alekcz/datahike.git
 
 # Build the Datahike HTTP-server uber-jar
 $ cd datahike && bb http-server-uber && cd ..
 
-# Copy the jar into the build context
+# Copy the built JAR into the build context
+# The JAR is renamed to datahike-http-server.jar for consistency
 $ mkdir -p build && cp datahike/target-http-server/*.jar build/datahike-http-server.jar
 
-# Build the container
-$ docker build -t datahike-server . -f .github/docker/Dockerfile
+# Build the Docker container
+$ docker build -t datahike-server .
 ```
 
 ---
